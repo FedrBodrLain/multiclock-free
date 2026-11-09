@@ -31,7 +31,7 @@ you get the same app, built and tested on your machine.
 ## Install
 
 **Option A, download.** Grab `MultiClock-<version>.zip` from
-[Releases](https://github.com/FedrBodr/multiclock-free/releases), unzip, move
+[Releases](https://github.com/FedrBodrLain/multiclock-free/releases), unzip, move
 `MultiClock.app` to `~/Applications` (or `/Applications`), then right-click it
 and choose **Open** once. The app is signed ad hoc, not notarized, so Gatekeeper
 asks the first time. If it refuses even then:
@@ -44,7 +44,7 @@ xattr -d com.apple.quarantine ~/Applications/MultiClock.app
 (`xcode-select --install`), not Xcode itself.
 
 ```sh
-git clone https://github.com/FedrBodr/multiclock-free.git
+git clone https://github.com/FedrBodrLain/multiclock-free.git
 cd multiclock-free
 swift run -c release multiclock-check   # 78 checks, must print 0 failed
 ./build.sh                               # installs ~/Applications/MultiClock.app and starts it
@@ -86,7 +86,7 @@ PROMPT.md, PROMPT.ru.md   the prompt-plan that rebuilds all of this
 
 ## License
 
-MIT. Made by [FedrBodr](https://github.com/FedrBodr).
+MIT. Made by [FedrBodr](https://github.com/FedrBodrLain).
 
 ---
 
@@ -102,7 +102,7 @@ MIT. Made by [FedrBodr](https://github.com/FedrBodr).
 [PROMPT.ru.md](PROMPT.ru.md). Вставьте его в Claude Code, Codex или любого
 агента на Маке и получите то же приложение, собранное и проверенное у вас.
 
-**Установка.** Скачать zip из [Releases](https://github.com/FedrBodr/multiclock-free/releases),
+**Установка.** Скачать zip из [Releases](https://github.com/FedrBodrLain/multiclock-free/releases),
 распаковать, перенести `MultiClock.app` в `~/Applications`, один раз открыть
 через правый клик → «Открыть» (подпись ad hoc, без нотаризации). Или собрать:
 `swift run -c release multiclock-check && ./build.sh` при установленных
