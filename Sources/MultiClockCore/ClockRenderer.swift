@@ -6,20 +6,33 @@ public struct ClockRenderer {
     /// The zone the user physically sits in. Day markers (⁺¹ / ⁻¹) are relative to it.
     public var localZone: TimeZone
     public var separator: String
+    /// Prefix the title with today's date (in `localZone`, one date for all zones).
+    public var showDate: Bool
 
     private let timeFormatter = DateFormatter()
     private let fullFormatter = DateFormatter()
+    private let dateFormatter = DateFormatter()
 
     public init(locale: Locale = .autoupdatingCurrent,
                 localZone: TimeZone = .autoupdatingCurrent,
-                separator: String = "   ") {
+                separator: String = "   ",
+                showDate: Bool = false) {
         self.locale = locale
         self.localZone = localZone
         self.separator = separator
+        self.showDate = showDate
         timeFormatter.locale = locale
         timeFormatter.setLocalizedDateFormatFromTemplate("jmm")
         fullFormatter.locale = locale
         fullFormatter.setLocalizedDateFormatFromTemplate("EEE d MMM jmm")
+        dateFormatter.locale = locale
+        dateFormatter.setLocalizedDateFormatFromTemplate("EEE d MMM")
+    }
+
+    /// Today's date in `localZone`: `Sun 9 Nov` (en), `So. 9. Nov.` (de).
+    public func dateString(at date: Date) -> String {
+        dateFormatter.timeZone = localZone
+        return dateFormatter.string(from: date)
     }
 
     /// Whole days between the calendar date in `zone` and the calendar date in `localZone`
@@ -48,7 +61,8 @@ public struct ClockRenderer {
 
     /// The whole menu bar title.
     public func title(for zones: [Zone], at date: Date) -> String {
-        zones.map { segment(for: $0, at: date) }.joined(separator: separator)
+        let parts = (showDate ? [dateString(at: date)] : []) + zones.map { segment(for: $0, at: date) }
+        return parts.joined(separator: separator)
     }
 
     /// Dropdown line: `MSK  Sun 9 Nov 01:57  ·  Europe/Moscow`.

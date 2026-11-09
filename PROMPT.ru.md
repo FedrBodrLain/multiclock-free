@@ -50,6 +50,9 @@
   `11:57 PM` в en_US).
 - Маркер дня: если календарная дата в поясе отличается от местной в тот же
   момент, добавить `⁺¹` или `⁻¹` (надстрочные символы Unicode).
+- Дата впереди (включена по умолчанию, переключатель **Показывать дату**,
+  ключ `UserDefaults` `showDate`): сегодняшняя дата по шаблону `EEE d MMM` в
+  первом поясе, одна на все пояса: `Sun 9 Nov   DE 00:05   MSK 02:05`.
 - По умолчанию: пояс 1 `DE` = `Europe/Berlin`, пояс 2 `MSK` = `Europe/Moscow`.
 - Пресеты (подпись ≤ 4 символов, все идентификаторы IANA валидны, без
   дублей): DE Berlin, MSK Moscow, UA Kyiv, UK London, PT Lisbon, RS Belgrade,
@@ -91,7 +94,7 @@ docs/native-clock.md  docs/images/before.png  docs/images/after.png
 
 ## Приёмочные проверки (`swift run -c release multiclock-check`)
 
-Фиксированные моменты: `late = 1_793_573_820` (2026-11-08 22:57 UTC = 23:57
+Фиксированные моменты: `late = 1_794_178_620` (2026-11-08 22:57 UTC = 23:57
 Берлин, 01:57 следующего дня Москва), `noon = 1_782_900_000` (2026-07-01
 10:00 UTC = 12:00 Берлин, 13:00 Москва, 19:00 Токио).
 
@@ -113,6 +116,11 @@ docs/native-clock.md  docs/images/before.png  docs/images/after.png
 9. `detailLine(JP Tokyo, at: noon)` начинается с `JP  `, заканчивается на
    `Asia/Tokyo`, содержит `19:00`.
 10. Заголовок одинаков в `noon` и `noon + 59 с`, отличается в `noon + 60 с`.
+12. С `showDate` и `en_GB`: `dateString(late)` начинается с `Sun` и содержит
+    `8 Nov` (запятую решает локаль), заголовок
+    `"<эта дата>   DE 23:57   MSK 01:57⁺¹"` (в Москве уже понедельник, префикс
+    остаётся берлинским воскресеньем); с `showDate = false` префикса нет; с
+    `de_DE` заголовок начинается с `So`.
 11. `LaunchAgent` во временной папке: в plist есть `Label`,
     `ProgramArguments == [executablePath]`, `RunAtLoad == true`,
     `KeepAlive == false`; имя файла `<label>.plist`; `toggle()` ставит,

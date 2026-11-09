@@ -18,7 +18,8 @@ you get the same app, built and tested on your machine.
 
 ## Features
 
-- Two zones side by side: `DE 23:57   MSK 01:57⁺¹`. Default Berlin + Moscow.
+- Two zones side by side: `Sun 9 Nov   DE 23:57   MSK 01:57⁺¹`. Default Berlin + Moscow.
+- One date for both zones (the first zone's), switchable off in the menu.
 - `⁺¹` / `⁻¹` when the other zone is already on the next (previous) day.
 - Both zones change from the menu: 20 presets or any IANA identifier
   (`Europe/Lisbon`) with autocomplete and your own short label.

@@ -8,7 +8,7 @@ final class App: NSObject, NSApplicationDelegate {
     let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     let menu = NSMenu()
     let defaults = UserDefaults.standard
-    let renderer = ClockRenderer()
+    var renderer = ClockRenderer()
     var zones: [Zone] = []
     var infoItems: [NSMenuItem] = []
     var timer: Timer?
@@ -29,6 +29,7 @@ final class App: NSObject, NSApplicationDelegate {
             Zone(stored: defaults.string(forKey: "zone1") ?? "") ?? Presets.first,
             Zone(stored: defaults.string(forKey: "zone2") ?? "") ?? Presets.second,
         ]
+        defaults.register(defaults: ["showDate": true])
         migrateLegacyAgent()
         menu.autoenablesItems = false
         item.menu = menu
@@ -50,6 +51,8 @@ final class App: NSObject, NSApplicationDelegate {
 
     func tick() {
         let now = Date()
+        renderer.showDate = defaults.bool(forKey: "showDate")
+        renderer.localZone = zones.first?.timeZone ?? .autoupdatingCurrent   // one date for all zones: the first zone's
         let title = renderer.title(for: zones, at: now)
         guard title != lastTitle else { return }
         lastTitle = title
@@ -74,6 +77,10 @@ final class App: NSObject, NSApplicationDelegate {
         menu.addItem(zoneSubmenu(title: "Первый пояс / First zone", slot: 0))
         menu.addItem(zoneSubmenu(title: "Второй пояс / Second zone", slot: 1))
         menu.addItem(.separator())
+        let dateItem = NSMenuItem(title: "Показывать дату / Show date", action: #selector(toggleDate(_:)), keyEquivalent: "")
+        dateItem.target = self
+        dateItem.state = defaults.bool(forKey: "showDate") ? .on : .off
+        menu.addItem(dateItem)
         let auto = NSMenuItem(title: "Запускать при входе / Launch at login",
                               action: #selector(toggleAutostart(_:)), keyEquivalent: "")
         auto.target = self
@@ -165,6 +172,11 @@ final class App: NSObject, NSApplicationDelegate {
         }
         if lbl.isEmpty { lbl = Zone.defaultLabel(for: id) }
         setZone(Zone(label: lbl, id: id), slot: slot)
+    }
+
+    @objc func toggleDate(_ sender: NSMenuItem) {
+        defaults.set(!defaults.bool(forKey: "showDate"), forKey: "showDate")
+        rebuildMenu()
     }
 
     // MARK: - Autostart

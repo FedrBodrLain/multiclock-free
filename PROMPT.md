@@ -46,6 +46,9 @@ Tools. No Xcode.app, no Homebrew, no third-party packages, no network calls.
   `11:57 PM` in en_US).
 - Day marker: if the zone's calendar date differs from the local date at the
   same instant, append `⁺¹` or `⁻¹` (Unicode superscripts).
+- Date prefix (on by default, menu toggle **Show date**, `UserDefaults` key
+  `showDate`): today's date from the `EEE d MMM` template in the first zone,
+  one date for all zones: `Sun 9 Nov   DE 00:05   MSK 02:05`.
 - Defaults: zone 1 `DE` = `Europe/Berlin`, zone 2 `MSK` = `Europe/Moscow`.
 - Presets (label ≤ 4 characters, all IANA identifiers valid, no duplicates):
   DE Berlin, MSK Moscow, UA Kyiv, UK London, PT Lisbon, RS Belgrade, TR
@@ -85,7 +88,7 @@ local zone and fixed `Date(timeIntervalSince1970:)` values.
 
 ## Acceptance tests (`swift run -c release multiclock-check`)
 
-Fixed instants: `late = 1_793_573_820` (2026-11-08 22:57 UTC = 23:57 Berlin,
+Fixed instants: `late = 1_794_178_620` (2026-11-08 22:57 UTC = 23:57 Berlin,
 01:57 next day Moscow), `noon = 1_782_900_000` (2026-07-01 10:00 UTC = 12:00
 Berlin, 13:00 Moscow, 19:00 Tokyo).
 
@@ -107,6 +110,11 @@ Berlin, 13:00 Moscow, 19:00 Tokyo).
 9. `detailLine(JP Tokyo, at: noon)` starts with `JP  `, ends with
    `Asia/Tokyo`, contains `19:00`.
 10. Title is identical at `noon` and `noon + 59 s`, different at `noon + 60 s`.
+12. With `showDate` and `en_GB`: `dateString(late)` starts with `Sun` and contains
+    `8 Nov` (the locale decides about the comma), title is
+    `"<that date>   DE 23:57   MSK 01:57⁺¹"` (Moscow is already Monday, the
+    prefix stays Berlin's Sunday); with `showDate = false` the prefix is gone;
+    with `de_DE` the title starts with `So`.
 11. `LaunchAgent` in a temp directory: plist has `Label`, `ProgramArguments ==
     [executablePath]`, `RunAtLoad == true`, `KeepAlive == false`; file name is
     `<label>.plist`; `toggle()` installs, the written file parses back with

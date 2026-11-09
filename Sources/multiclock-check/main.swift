@@ -24,7 +24,7 @@ let berlin = TimeZone(identifier: "Europe/Berlin")!
 let moscow = TimeZone(identifier: "Europe/Moscow")!
 let la = TimeZone(identifier: "America/Los_Angeles")!
 // 2026-11-08 22:57:00 UTC == 23:57 Berlin (CET) == 01:57 next day Moscow (the screenshot moment).
-let late = Date(timeIntervalSince1970: 1_793_573_820)
+let late = Date(timeIntervalSince1970: 1_794_178_620)
 // 2026-07-01 10:00:00 UTC == 12:00 Berlin (CEST) == 13:00 Moscow == 19:00 Tokyo.
 let noon = Date(timeIntervalSince1970: 1_782_900_000)
 let de = ClockRenderer(locale: Locale(identifier: "de_DE"), localZone: berlin, separator: "   ")
@@ -94,6 +94,18 @@ test("Title stable within a minute, changes on the next") {
     let zones = [Presets.first, Presets.second]
     equal(de.title(for: zones, at: noon), de.title(for: zones, at: noon.addingTimeInterval(59)))
     check(de.title(for: zones, at: noon) != de.title(for: zones, at: noon.addingTimeInterval(60)), "minute rollover")
+}
+
+test("Date prefix: one date for all zones, taken from the local zone") {
+    var r = ClockRenderer(locale: Locale(identifier: "en_GB"), localZone: berlin, separator: "   ", showDate: true)
+    let zones = [Zone(label: "DE", id: "Europe/Berlin"), Zone(label: "MSK", id: "Europe/Moscow")]
+    let d = r.dateString(at: late)
+    check(d.hasPrefix("Sun") && d.contains("8 Nov"), "local date: \(d)")
+    equal(r.title(for: zones, at: late), "\(d)   DE 23:57   MSK 01:57⁺¹", "Moscow is already Monday, the prefix stays Berlin's Sunday")
+    r.showDate = false
+    equal(r.title(for: zones, at: late), "DE 23:57   MSK 01:57⁺¹")
+    let de = ClockRenderer(locale: Locale(identifier: "de_DE"), localZone: berlin, showDate: true)
+    check(de.title(for: zones, at: late).hasPrefix("So"), "German weekday: \(de.title(for: zones, at: late))")
 }
 
 // MARK: LaunchAgent
